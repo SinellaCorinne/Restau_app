@@ -1,0 +1,101 @@
+import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import '../theme/style.dart';
+
+class ReservationsPage extends StatefulWidget {
+  const ReservationsPage({super.key});
+
+  @override
+  State<ReservationsPage> createState() => _ReservationsPageState();
+}
+
+class _ReservationsPageState extends State<ReservationsPage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey.shade100,
+      appBar: AppBar(
+        title: Text('Liste des Réservations'),
+        backgroundColor: KColors.primary, // Changer pour ta couleur principale
+      ),
+      body: StreamBuilder<QuerySnapshot>(
+        stream: FirebaseFirestore.instance.collection('reservations').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return Center(child: CircularProgressIndicator(color: Colors.blueAccent));
+          }
+          if (snapshot.hasError) {
+            return Center(child: Text('Erreur: ${snapshot.error}'));
+          }
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(child: Text('Aucune réservation trouvée.'));
+          }
+
+          var reservations = snapshot.data!.docs;
+
+          return ListView.builder(
+            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            itemCount: reservations.length,
+            itemBuilder: (context, index) {
+              var reservation = reservations[index];
+              String name = reservation['name'] ?? 'Utilisateur inconnu';
+              String date = reservation['date'] ?? 'Date inconnue';
+              String time = reservation['time'] ?? 'Heure non trouvée';
+
+              return Card(
+                margin: EdgeInsets.only(bottom: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                elevation: 4,
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(12),
+                  onTap: () {
+                    // Ajouter une action si tu veux ouvrir une page de détail de réservation
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.all(12),
+                    child: Row(
+                      children: [
+                        // Icône de réservation
+                        Icon(
+                          Icons.event_available,
+                          color: KColors.primary, // Changer pour ta couleur principale
+                          size: 40,
+                        ),
+                        SizedBox(width: 16),
+                        // Informations de la réservation
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                name,
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.black87, // Couleur texte principal
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                'Date: $date\nHeure: $time',
+                                style: TextStyle(fontSize: 14, color: Colors.grey),
+                              ),
+                            ],
+                          ),
+                        ),
+                        // Actions (ici, on n'a pas de boutons, mais tu peux en ajouter)
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+}
