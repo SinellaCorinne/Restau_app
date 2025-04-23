@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "861244497322",
+    "project_id": "appfirebase-7c230",
+    "storage_bucket": "appfirebase-7c230.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:861244497322:android:aadacdaf72fd774bbc5fd3",
+        "android_client_info": {
+          "package_name": "com.example.restau_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMElcARiXXRfsrFNtCj82JgDyYCGzoE5c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
