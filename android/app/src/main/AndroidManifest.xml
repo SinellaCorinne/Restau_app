@@ -1,22 +1,27 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.example.restau_app">
 
-    <!-- Permissions -->
+    <!-- 📁 Permissions de stockage (facultatif selon ton usage) -->
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES"/>
     <uses-permission android:name="android.permission.READ_MEDIA_VIDEO"/>
     <uses-permission android:name="android.permission.READ_MEDIA_AUDIO"/>
 
-    <!-- Balise <queries> déplacée ici -->
+    <!-- 🔔 Permission pour les notifications (Android 13+ API 33) -->
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
+
+    <!-- 🔍 Utilisé pour les requêtes externes (ex: Facebook) -->
     <queries>
         <provider android:authorities="com.facebook.katana.provider.PlatformProvider" />
     </queries>
 
     <application
-        android:label="restau_app"
+        android:label="TastyFood"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
 
+        <!-- 🚀 Activité principale Flutter -->
         <activity
             android:name=".MainActivity"
             android:exported="true"
@@ -26,20 +31,22 @@
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"
             android:hardwareAccelerated="true"
             android:windowSoftInputMode="adjustResize">
+
             <meta-data
                 android:name="io.flutter.embedding.android.NormalTheme"
                 android:resource="@style/NormalTheme" />
+
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
 
-        <!-- Facebook SDK -->
+        <!-- 📲 Facebook SDK -->
         <meta-data android:name="com.facebook.sdk.ApplicationId"
-                   android:value="@string/facebook_app_id"/>
+            android:value="@string/facebook_app_id"/>
         <meta-data android:name="com.facebook.sdk.ClientToken"
-                   android:value="@string/facebook_client_token"/>
+            android:value="@string/facebook_client_token"/>
 
         <activity
             android:name="com.facebook.FacebookActivity"
@@ -57,6 +64,33 @@
                 <data android:scheme="@string/fb_login_protocol_scheme" />
             </intent-filter>
         </activity>
+
+        <!-- 🔥 Firebase Messaging Services -->
+
+        <!-- Service pour recevoir les messages -->
+        <service
+            android:name="io.flutter.plugins.firebase.messaging.FlutterFirebaseMessagingService"
+            android:exported="true"
+            tools:replace="android:exported">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
+        <!-- Recevoir le token FCM (optionnel mais recommandé) -->
+        <receiver
+            android:name="com.google.firebase.iid.FirebaseInstanceIdInternalReceiver"
+            android:exported="false" />
+
+        <receiver
+            android:name="com.google.firebase.iid.FirebaseInstanceIdReceiver"
+            android:exported="true"
+            android:permission="com.google.android.c2dm.permission.SEND">
+            <intent-filter>
+                <action android:name="com.google.android.c2dm.intent.RECEIVE" />
+                <category android:name="${applicationId}" />
+            </intent-filter>
+        </receiver>
 
         <meta-data
             android:name="flutterEmbedding"

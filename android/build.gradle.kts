@@ -5,7 +5,8 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath("com.google.gms:google-services:4.3.15") // Utilise les guillemets pour la chaîne de caractères
+       classpath("com.google.gms:google-services:4.3.15");
+    // Utilise les guillemets pour la chaîne de caractères
     }
 }
 
