@@ -1,0 +1,103 @@
+[
+    {
+        "nom": "Pizza Margherita",
+        "prix": 4000,
+        "images": "assets/images/plat1.jpeg",
+        "categorie":"Plats"
+      },
+      {
+        "nom": "Burger Classique",
+        "prix": 3500,
+        "images": "assets/images/plat2.jpeg",
+        "categorie":"Entrées"
+      },
+      {
+        "nom": "Poulet Yassa",
+        "prix": 4500,
+        "images": "assets/images/plat3.jpeg",
+        "categorie":"Boisson"
+      },
+
+      {
+        "nom": "Pizza Margherita",
+        "prix": 4000,
+        "images": "assets/images/lily-banse.jpg",
+        "categorie":"Desserts"
+      },
+        
+      {
+        "nom": "Burger Classique",
+        "prix": 3500,
+        "images":"assets/images/pain_myrt.jpeg",
+        "categorie":"Plats"
+        
+      },
+      {
+        "nom": "Poulet Yassa",
+        "prix": 4500,
+        "images":"assets/images/allen-rad-JBIK4QZOFfc-unsplash.jpg",
+        "categorie":"Entrées"
+      },
+      {
+        "nom": "Pizza Margherita",
+        "prix": 4000,
+        "images": "assets/images/great-cocktails.jpg",
+        "categorie":"Boisson"
+        
+      },
+      {
+        "nom": "Burger Classique",
+        "prix": 3500,
+        "images": "assets/images/joseph-gonzalez.jpg",
+        "categorie":"Desserts"
+      },
+
+      
+      {
+        "nom": "Poulet Yassa",
+        "prix": 4500,
+        "images": "assets/images/victor-rutka.jpg",
+        "categorie":"Plats"
+        
+      },
+      {
+        "nom": "Pizza Margherita",
+        "prix": 4000,
+        "images":"assets/images/kobby.jpg",
+        "categorie":"Entrées"
+
+      },
+      {
+        "nom": "Burger Classique",
+        "prix": 3500,
+        "images": 
+        "assets/images/pushpak.jpg",
+        "categorie":"Boisson"
+      
+      },
+      {
+        "nom": "Poulet Yassa",
+        "prix": 4500,
+        "images": "assets/images/tiramisu.jpeg",
+        "categorie":"Desserts"
+      }
+      ,{
+        "nom": "Pizza Margherita",
+        "prix": 4000,
+        "images": "assets/images/plat1.jpeg",
+        "categorie":"Plats"
+      },
+      {
+        "nom": "Burger Classique",
+        "prix": 3500,
+        "images": "assets/images/plat2.jpeg",
+        "categorie":"Entrées"
+      },
+      
+      {
+        "nom": "Poulet Yassa",
+        "prix": 4500,
+        "images": "assets/images/plat3.jpeg",
+        "categorie":"Boisson"
+      }
+]
