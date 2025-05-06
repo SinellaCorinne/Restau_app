@@ -22,14 +22,16 @@ class CustomResetPassword extends Notification
     {
         return ['mail'];
     }
+
     public function toMail($notifiable)
     {
-        $url = url('/reset-password/'.$this->token.'?email='.urlencode($notifiable->getEmailForPasswordReset()));
+        $mobileUrl = env('MOBILE_APP_URL').'/reset-password?'
+            .'token='.$this->token
+            .'&email='.urlencode($notifiable->getEmailForPasswordReset());
 
         return (new MailMessage)
             ->subject('Réinitialisation de mot de passe')
-            ->line('Vous recevez cet email car nous avons reçu une demande de réinitialisation.')
-            ->action('Réinitialiser le mot de passe', $url)
-            ->line('Ce lien expirera dans 60 minutes.');
+            ->line('Cliquez pour réinitialiser')
+            ->action('Réinitialiser', $mobileUrl);
     }
 }

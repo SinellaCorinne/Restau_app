@@ -13,18 +13,44 @@ use Illuminate\Support\Facades\Hash;
 
 class AuthController extends Controller
 {
-    public function register(CreateUserRequest $request): JsonResponse
+    public function register(Request $request)
     {
-        $data = $request->validated();
-        $data['password'] = Hash::make($data['password']);
+        $validated = $request->validate([
+            'nom' => 'required|string|max:255',
+            'prenom' => 'required|string|max:255',
+            'email' => 'required|string|email|max:255|unique:users',
+            'telephone' => 'required|string|max:20',
+            'password' => 'required|string|min:8|confirmed',
+            'adresse' => 'nullable|string|max:255',
+            'ville' => 'nullable|string|max:100',
+            'preferences' => 'nullable|string|max:100',
+            'photo' => 'nullable|image|max:2048',
+        ]);
 
-        $user = User::create($data);
+        if ($request->hasFile('photo')) {
+            $photoPath = $request->file('photo')->store('photos', 'public');
+        } else {
+            $photoPath = null;
+        }
+
+        $user = User::create([
+            'nom' => $validated['nom'],
+            'prenom' => $validated['prenom'],
+            'email' => $validated['email'],
+            'telephone' => $validated['telephone'],
+            'password' => bcrypt($validated['password']),
+            'adresse' => $validated['adresse'] ?? null,
+            'ville' => $validated['ville'] ?? null,
+            'preferences' => $validated['preferences'] ?? null,
+            'photo' => $photoPath,
+        ]);
 
         return response()->json([
-            'message' => 'User registered successfully',
-            'user' => new UserResource($user)
+            'message' => 'Utilisateur inscrit avec succès',
+            'user' => $user,
         ], 201);
     }
+
 
     public function login(LoginRequest $request): JsonResponse
     {

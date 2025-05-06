@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
 
+
 class ForgotPasswordController extends Controller
 {
     public function sendResetLink(Request $request)
@@ -48,11 +49,37 @@ class ForgotPasswordController extends Controller
 
         } catch (\Exception $e) {
             Log::error('Password reset error: '.$e->getMessage());
-            
+
             return response()->json([
                 'status' => false,
                 'message' => 'Impossible d\'envoyer l\'e-mail : '.$e->getMessage()
             ], 500);
         }
+
+
+
     }
-}
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => Hash::make($password)
+                ])->save();
+            }
+        );
+
+        return response()->json([
+            'status' => $status === Password::PASSWORD_RESET,
+            'message' => __($status)
+        ]);
+    }
+
+    }
