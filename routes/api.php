@@ -7,6 +7,11 @@ use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Auth\NewPasswordController;
+use App\Http\Controllers\ReservationController;
+use App\Http\Controllers\API\CommandeController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\PasswordController;
+
 
 
 
@@ -57,3 +62,25 @@ Route::get('/reset-password-preview', function (Request $request) {
         'message' => 'Copiez ce token et utilisez-le pour appeler POST /api/reset-password',
     ]);
 });
+
+
+
+Route::middleware('auth:sanctum')->post('/reservations', [ReservationController::class, 'store']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/commandes', [CommandeController::class, 'store']);
+});
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/user', [UserController::class, 'getUserInfo']);
+    Route::put('/user/update', [UserController::class, 'updateUserInfo']);
+    Route::post('/user/update-photo', [UserController::class, 'updateProfilePhoto']);
+ 
+});
+
+
+
+Route::put('/update-password', [PasswordController::class, 'update'])
+    ->middleware('auth:sanctum');

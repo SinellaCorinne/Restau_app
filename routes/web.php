@@ -13,3 +13,9 @@ use Illuminate\Http\Request;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+
+// routes/web.php ou routes/api.php
+Route::get('/login', function () {
+    // Logic de la page de connexion
+})->name('login');
