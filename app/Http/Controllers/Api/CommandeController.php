@@ -4,11 +4,12 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use App\Models\Commande;
-use App\Models\Product; // Changé de Produit à Product
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+
 
 class CommandeController extends Controller
 {
@@ -20,7 +21,7 @@ class CommandeController extends Controller
         $validator = Validator::make($request->all(), [
             'adresse' => 'required|string|max:255',
             'remarque' => 'nullable|string|max:500',
-            'heure' => 'nullable|date|after_or_equal:now', // Changé à nullable
+            'heure' => 'nullable|date|after_or_equal:now',
             'methode_paiement' => 'required|in:Espèce,Mobile Money,Carte bancaire',
             'details_paiement' => 'required|array',
             'panier' => 'required|array|min:1',
@@ -43,8 +44,8 @@ class CommandeController extends Controller
         try {
             // Vérifier la disponibilité des produits
             foreach ($request->panier as $item) {
-                $product = Product::find($item['produit_id']); // Changé vers Product
-                if (!$product || $product->stock < $item['quantite']) {
+                $product = Product::find($item['produit_id']);
+                if (!$product || !$product->is_available) {
                     return response()->json([
                         'status' => 'error',
                         'message' => 'Produit non disponible: ' . ($product->name ?? 'ID '.$item['produit_id'])
@@ -57,18 +58,12 @@ class CommandeController extends Controller
                 'user_id' => Auth::id(),
                 'adresse' => $request->adresse,
                 'remarque' => $request->remarque,
-                'heure' => $request->heure ?? now()->addHours(2), // Valeur par défaut: maintenant + 2h
+                'heure' => $request->heure ?? now()->addHours(2),
                 'methode_paiement' => $request->methode_paiement,
                 'details_paiement' => $request->details_paiement,
                 'panier' => $this->formatPanierItems($request->panier),
                 'montant_total' => $this->calculateTotal($request->panier)
             ]);
-
-            // Mettre à jour les stocks
-            foreach ($request->panier as $item) {
-                Product::where('id', $item['produit_id']) // Changé vers Product
-                       ->decrement('stock', $item['quantite']);
-            }
 
             return response()->json([
                 'status' => 'success',
@@ -92,8 +87,8 @@ class CommandeController extends Controller
     {
         try {
             $commandes = Commande::with(['user:id,nom,prenom'])
-                              ->orderBy('created_at', 'desc')
-                              ->get();
+                            ->orderBy('created_at', 'desc')
+                            ->get();
 
             return response()->json([
                 'status' => 'success',
@@ -124,7 +119,7 @@ class CommandeController extends Controller
     {
         try {
             $commande = Commande::with(['user:id,nom,prenom,telephone'])
-                              ->find($id);
+                            ->find($id);
 
             if (!$commande) {
                 return response()->json([
@@ -167,11 +162,11 @@ class CommandeController extends Controller
     private function formatPanierItems(array $panier): array
     {
         return array_map(function ($item) {
-            $product = Product::find($item['produit_id']); // Changé vers Product
+            $product = Product::find($item['produit_id']);
 
             return [
                 'produit_id' => $item['produit_id'],
-                'nom' => $product->name ?? 'Produit inconnu', // Utilisation de name
+                'nom' => $product->name ?? 'Produit inconnu',
                 'quantite' => $item['quantite'],
                 'prix_unitaire' => $item['prix_unitaire'] ?? $product->price,
                 'sous_total' => ($item['prix_unitaire'] ?? $product->price) * $item['quantite'],
@@ -224,5 +219,96 @@ class CommandeController extends Controller
                 ];
             })
         ]);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $validator = Validator::make($request->all(), [
+            'adresse' => 'sometimes|string|max:255',
+            'remarque' => 'nullable|string|max:500',
+            'heure' => 'nullable|date|after_or_equal:now',
+            'methode_paiement' => 'sometimes|in:Espèce,Mobile Money,Carte bancaire',
+            'details_paiement' => 'sometimes|array',
+            'statut' => 'sometimes|in:confirmée,préparation,livrée,annulée'
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Validation échouée',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+
+        try {
+            $commande = Commande::findOrFail($id);
+
+            // Vérification que l'utilisateur peut modifier cette commande
+            if ($commande->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Non autorisé'
+                ], 403);
+            }
+
+            $commande->update($request->only([
+                'adresse',
+                'remarque',
+                'heure',
+                'methode_paiement',
+                'details_paiement',
+                'statut'
+            ]));
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Commande mise à jour avec succès',
+                'data' => $this->formatCommandeResponse($commande)
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Erreur CommandeController@update: '.$e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Erreur lors de la mise à jour de la commande'
+            ], 500);
+        }
+    }
+
+    /**
+     * Supprime une commande
+     */
+    public function destroy($id)
+    {
+        try {
+            $commande = Commande::findOrFail($id);
+
+            // Vérification des droits
+            if ($commande->user_id !== Auth::id() && !Auth::user()->isAdmin()) {
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Non autorisé'
+                ], 403);
+            }
+
+            // On peut ajouter une logique de restitution du stock ici si nécessaire
+            // foreach ($commande->panier as $item) {
+            //     Product::where('id', $item['produit_id'])->increment('stock', $item['quantite']);
+            // }
+
+            $commande->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Commande supprimée avec succès'
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Erreur CommandeController@destroy: '.$e->getMessage());
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Erreur lors de la suppression de la commande'
+            ], 500);
+        }
     }
 }
