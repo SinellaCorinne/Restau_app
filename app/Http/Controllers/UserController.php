@@ -84,4 +84,28 @@ public function updatePassword(Request $request)
             'photo_path' => $user->photo
         ]);
     }
+public function getAllUsers()
+{
+    // Récupère tous les utilisateurs avec les champs sélectionnés
+    $users = User::select([
+                'id',
+                'nom',
+                'prenom',
+                'email',
+                'telephone',
+                'adresse',
+                'ville',
+                'preferences',
+                'photo',
+                'created_at'
+            ])
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+    return response()->json([
+        'success' => true,
+        'message' => $users->isEmpty() ? 'Aucun utilisateur trouvé' : 'Utilisateurs récupérés avec succès',
+        'data' => $users
+    ]);
+}
 }

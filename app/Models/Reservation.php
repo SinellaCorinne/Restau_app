@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Reservation extends Model
 {
+
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
     use HasFactory;
 
     // Les champs qui peuvent être remplis massivement

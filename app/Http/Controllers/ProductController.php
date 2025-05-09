@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Models\Menu;
+use App\Models\MenuCategory;
+
 
 class ProductController extends Controller
 {
@@ -35,7 +38,9 @@ class ProductController extends Controller
             'name' => 'required|string|max:255',
             'description' => 'required|string',
             'price' => 'required|numeric|min:0',
-            'image_url' => 'nullable|url'
+            'image_url' => 'nullable|url',
+            'menu_category_id' => 'required|exists:menu_categories,id',
+
         ]);
 
         // Réinitialiser l'auto-incrément si la table est vide
@@ -87,7 +92,10 @@ class ProductController extends Controller
             'name' => 'sometimes|string|max:255',
             'description' => 'sometimes|string',
             'price' => 'sometimes|numeric|min:0',
-            'image_url' => 'nullable|url'
+            'image_url' => 'nullable|url',
+        
+
+
         ]);
 
         $product->update($validated);
@@ -136,4 +144,98 @@ class ProductController extends Controller
             'message' => 'Non autorisé en production.'
         ], 403);
     }
+
+
+  // Ajoutez ces méthodes à votre ProductController existant
+
+/**
+ * Affiche tout le menu structuré
+ */
+public function fullMenu()
+{
+    try {
+        $menu = Menu::with(['categories.products' => function($query) {
+            $query->orderBy('name');
+        }])->first();
+
+        if (!$menu) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Aucun menu trouvé'
+            ], 404);
+        }
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'menu' => [
+                    'id' => $menu->id,
+                    'name' => $menu->name,
+                    'description' => $menu->description,
+                    'categories' => $menu->categories->map(function($category) {
+                        return [
+                            'id' => $category->id,
+                            'name' => $category->name,
+                            'slug' => $category->slug,
+                            'products' => $category->products->map(function($product) {
+                                return [
+                                    'id' => $product->id,
+                                    'name' => $product->name,
+                                    'price' => $product->price,
+                                    'image_url' => $product->image_url
+                                ];
+                            })
+                        ];
+                    })
+                ]
+            ]
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Erreur lors de la récupération du menu',
+            'error' => env('APP_DEBUG') ? $e->getMessage() : null
+        ], 500);
+    }
+}
+
+/**
+ * Récupère les produits par catégorie
+ */
+public function byMenuCategory($categorySlug)
+{
+    try {
+        $category = MenuCategory::where('slug', $categorySlug)
+            ->with(['products' => function($query) {
+                $query->orderBy('name');
+            }])
+            ->firstOrFail();
+
+        return response()->json([
+            'status' => 'success',
+            'data' => [
+                'category' => [
+                    'id' => $category->id,
+                    'name' => $category->name,
+                    'products' => $category->products->map(function($product) {
+                        return [
+                            'id' => $product->id,
+                            'name' => $product->name,
+                            'price' => $product->price,
+                            'image_url' => $product->image_url
+                        ];
+                    })
+                ]
+            ]
+        ]);
+
+    } catch (\Exception $e) {
+        return response()->json([
+            'status' => 'error',
+            'message' => 'Catégorie non trouvée',
+            'error' => env('APP_DEBUG') ? $e->getMessage() : null
+        ], 404);
+    }
+}
 }
