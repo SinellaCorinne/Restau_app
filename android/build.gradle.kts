@@ -1,14 +1,3 @@
-// Ajoute la section buildscript si elle n'existe pas
-buildscript {
-    repositories {
-        google()
-        mavenCentral()
-    }
-    dependencies {
-        classpath("com.google.gms:google-services:4.3.15") // Utilise les guillemets pour la chaîne de caractères
-    }
-}
-
 allprojects {
     repositories {
         google()

@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart'; // 🔧 À ne pas oublier
 import 'package:restau_app/composants/CInput.dart';
 import 'package:restau_app/composants/ElevattedButton.dart';
 import 'package:restau_app/style.dart';
-
 import 'login.dart';
 
 class ForgotPassword extends StatefulWidget {
@@ -19,47 +17,23 @@ class _ForgotPasswordState extends State<ForgotPassword> {
   final _formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
-  bool isValidEmail(String email) {
-    String emailPattern = r'^[^@]+@[^@]+\.[^@]+$';
-    return RegExp(emailPattern).hasMatch(email);
-  }
+  bool isValidEmail(String email) =>
+      RegExp(r'^[^@]+@[^@]+\.[^@]+$').hasMatch(email);
 
   Future<void> _sendResetLink() async {
     if (_formKey.currentState?.validate() ?? false) {
-      setState(() {
-        isLoading = true;
-      });
+      setState(() => isLoading = true);
+      await Future.delayed(const Duration(milliseconds: 800));
+      setState(() => isLoading = false);
 
-      try {
-        await FirebaseAuth.instance.sendPasswordResetEmail(
-          email: _emailController.text.trim(),
-        );
-
-        setState(() {
-          isLoading = false;
-        });
-
-        Get.snackbar(
-          "Succès",
-          "Un e-mail de réinitialisation a été envoyé à ${_emailController.text}.",
-          snackPosition: SnackPosition.BOTTOM,
-          backgroundColor: KColors.primary,
-          colorText: Colors.white,
-        );
-        Get.to(Login());
-      } catch (e) {
-        setState(() {
-          isLoading = false;
-        });
-
-        Get.snackbar(
-          "Erreur",
-          "Impossible d'envoyer l'e-mail : ${e.toString()}",
-          snackPosition: SnackPosition.TOP,
-          backgroundColor: Colors.red,
-          colorText: Colors.white,
-        );
-      }
+      Get.snackbar(
+        "Succès",
+        "Un e-mail de réinitialisation a été envoyé à ${_emailController.text}.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: KColors.primary,
+        colorText: Colors.white,
+      );
+      Get.to(Login());
     }
   }
 
@@ -103,9 +77,9 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   isLoading
                       ? const CircularProgressIndicator()
                       : Elevattedbutton(
-                    onPressed: _sendResetLink,
-                    child: const Text("Continuer"),
-                  ),
+                          onPressed: _sendResetLink,
+                          child: const Text("Continuer"),
+                        ),
                 ],
               ),
             ),

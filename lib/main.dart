@@ -5,21 +5,12 @@ import 'package:restau_app/welcome.dart';
 import 'home/controller_pacontroll/PanierController.dart';
 import 'style.dart';
 import 'package:provider/provider.dart';
-import 'package:firebase_core/firebase_core.dart';
 
-void main() async {
-  // Assurez-vous que Flutter est initialisé
-  WidgetsFlutterBinding.ensureInitialized();
-
-  // Initialisez Firebase
-  await Firebase.initializeApp();
-
-  // Exécutez l'application avec MultiProvider
+void main() {
   runApp(
     MultiProvider(
       providers: [
         ChangeNotifierProvider(create: (_) => PanierController()),
-        // Ajoutez d'autres providers ici si nécessaire
       ],
       child: MyApp(),
     ),
