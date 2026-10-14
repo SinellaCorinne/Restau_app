@@ -1,4 +1,4 @@
-package com.example.restau_app;
+package com.sinella.restauapp;
 
 import io.flutter.embedding.android.FlutterActivity;
 

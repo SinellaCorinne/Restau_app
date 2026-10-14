@@ -5,7 +5,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.restau_app"
+    namespace = "com.sinella.restauapp"
     compileSdk = 35
     ndkVersion = "27.0.12077973"
 
@@ -19,7 +19,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.restau_app"
+        applicationId = "com.sinella.restauapp"
         minSdk = 23
         targetSdk = flutter.targetSdkVersion
         versionCode = flutter.versionCode
