@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import 'package:restau_app/composants/CInput.dart';
 import '../../style.dart'; // Assure-toi que KColors et KTypography sont définis dans ce fichier
 

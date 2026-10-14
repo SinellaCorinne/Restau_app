@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:iconsax/iconsax.dart';
 import '../controller_pacontroll/PanierController.dart';
 import '../../style.dart';
 import 'package:provider/provider.dart';

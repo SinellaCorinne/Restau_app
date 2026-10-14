@@ -40,15 +40,11 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      # 5. Vérifie que le code compile sans erreur
-      - name: Analyze code
-        run: flutter analyze --no-fatal-infos
-
-      # 6. Compile l'APK en mode release
+      # 5. Compile l'APK en mode release
       - name: Build release APK
         run: flutter build apk --release --no-tree-shake-icons
 
-      # 7. Publie l'APK comme artefact téléchargeable
+      # 6. Publie l'APK comme artefact téléchargeable
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:

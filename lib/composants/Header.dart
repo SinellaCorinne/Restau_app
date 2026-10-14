@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-
 import '../style.dart';
 
 class Header extends StatelessWidget implements PreferredSizeWidget {

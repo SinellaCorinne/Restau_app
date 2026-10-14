@@ -4,7 +4,7 @@ import 'package:restau_app/auth/login.dart';
 import 'package:restau_app/composants/CInput.dart';
 import 'package:restau_app/composants/ElevattedButton.dart';
 
-import '../style.dart';
+
 
 class NewPasswordPage extends StatefulWidget {
   const NewPasswordPage({super.key});

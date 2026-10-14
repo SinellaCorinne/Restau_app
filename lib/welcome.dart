@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:restau_app/auth/login.dart';
 import 'package:restau_app/composants/ElevattedButton.dart';
-import 'package:restau_app/home/controller_pacontroll/homePage.dart';
 import 'package:restau_app/style.dart';
 class Welcome extends StatefulWidget {
   const Welcome({super.key});

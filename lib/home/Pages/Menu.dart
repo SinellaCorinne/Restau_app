@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import 'package:iconsax/iconsax.dart';
 import 'package:restau_app/mock/mock_data.dart';
 import 'package:restau_app/style.dart';
-import '../../composants/ElevattedButton.dart';
 import '../controller_pacontroll/PanierController.dart';
 import 'FoodInfo.dart';
 

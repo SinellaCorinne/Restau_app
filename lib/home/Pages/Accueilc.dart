@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:iconsax/iconsax.dart';
-import 'package:restau_app/composants/Header.dart';
 import 'package:restau_app/home/Pages/FoodInfo.dart';
 import 'package:restau_app/mock/mock_data.dart';
 import 'package:restau_app/style.dart';
-import '../../composants/CInput.dart';
 
 class Accueilc extends StatefulWidget {
   const Accueilc({super.key});
